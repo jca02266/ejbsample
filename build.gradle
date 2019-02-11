@@ -1,0 +1,64 @@
+apply plugin: 'war'
+
+def javaVersion = 1.8
+def defaultEncoding = 'UTF-8'
+// Change the path for your environment
+def glassfishDirectory = "c:/glassfish4"
+
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+tasks.withType(AbstractCompile) each { it.options.encoding = defaultEncoding }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile files("${glassfishDirectory}/glassfish/lib/gf-client.jar")
+    providedCompile 'javax:javaee-api:7.0'
+}
+
+// deploy task
+task deploy(dependsOn: "war") {
+    doLast {
+        exec {
+            executable "cmd.exe"
+            args "/c", "${glassfishDirectory}/bin/asadmin", "deploy", "build/libs/ejbsample.war"
+        }
+    }
+}
+
+task redeploy(dependsOn: "war") {
+    doLast {
+        exec {
+            executable "cmd.exe"
+            args "/c", "${glassfishDirectory}/bin/asadmin", "redeploy", "--name=ejbsample", "build/libs/ejbsample.war"
+        }
+    }
+}
+
+task undeploy {
+    doLast {
+        exec {
+            executable "cmd.exe"
+            args "/c", "${glassfishDirectory}/bin/asadmin", "undeploy", "ejbsample"
+        }
+    }
+}
+
+[deploy, redeploy].each {
+    it.doLast {
+        println("");
+        exec {
+            executable "cmd.exe"
+            args "/c", "${glassfishDirectory}/bin/asadmin", "list-jndi-entries"
+        }
+    }
+}
+
+// application
+apply plugin: 'application'
+
+mainClassName = "sample.ejb.client.EjbSampleClient"
+
