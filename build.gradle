@@ -3,7 +3,7 @@ apply plugin: 'war'
 def javaVersion = 1.8
 def defaultEncoding = 'UTF-8'
 // Change the path for your environment
-def glassfishDirectory = "c:/glassfish4"
+def glassfishDirectory = "$projectDir/glassfish4"
 
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
@@ -23,8 +23,8 @@ dependencies {
 task deploy(dependsOn: "war") {
     doLast {
         exec {
-            executable "cmd.exe"
-            args "/c", "${glassfishDirectory}/bin/asadmin", "deploy", "build/libs/ejbsample.war"
+            executable "${glassfishDirectory}/bin/asadmin"
+            args "deploy", "build/libs/ejbsample.war"
         }
     }
 }
@@ -32,8 +32,8 @@ task deploy(dependsOn: "war") {
 task redeploy(dependsOn: "war") {
     doLast {
         exec {
-            executable "cmd.exe"
-            args "/c", "${glassfishDirectory}/bin/asadmin", "redeploy", "--name=ejbsample", "build/libs/ejbsample.war"
+            executable "${glassfishDirectory}/bin/asadmin"
+            args "redeploy", "--name=ejbsample", "build/libs/ejbsample.war"
         }
     }
 }
@@ -41,8 +41,8 @@ task redeploy(dependsOn: "war") {
 task undeploy {
     doLast {
         exec {
-            executable "cmd.exe"
-            args "/c", "${glassfishDirectory}/bin/asadmin", "undeploy", "ejbsample"
+            executable "${glassfishDirectory}/bin/asadmin"
+            args "undeploy", "ejbsample"
         }
     }
 }
@@ -51,8 +51,8 @@ task undeploy {
     it.doLast {
         println("");
         exec {
-            executable "cmd.exe"
-            args "/c", "${glassfishDirectory}/bin/asadmin", "list-jndi-entries"
+            executable "${glassfishDirectory}/bin/asadmin"
+            args "list-jndi-entries"
         }
     }
 }
