@@ -15,8 +15,10 @@ unzip & start domain (default domain name is "domain1")
 
 ```
 unzip glassfish-4.1.2-web.zip
-cd glassfish4\bin
-asadmin start-domain
+
+glassfish4/bin/asadmin start-database
+glassfish4/bin/asadmin start-domain
+
 # admin console
 start http://localhost:4848/
 ```
